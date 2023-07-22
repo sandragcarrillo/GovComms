@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { ethers } from "ethers";
 import { Web3ReactProvider } from "@web3-react/core";
 import App from './App';
 import { Nav } from './components/main/Header';
 import './index.css';
-
 
 
 const root = ReactDOM.createRoot(
@@ -25,10 +24,9 @@ function getLibrary(provider: any) {
 root.render(
   <React.StrictMode>
     <Web3ReactProvider getLibrary={getLibrary}>
-      <BrowserRouter>
-      <Nav />
+      <Router>
         <App />
-      </BrowserRouter>
+      </Router>
     </Web3ReactProvider>
   </React.StrictMode>
 );
