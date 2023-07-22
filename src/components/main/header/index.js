@@ -57,7 +57,7 @@ export const Nav = () => {
               <li>
                 <a
                   href="/"
-                  aria-label="Sapces"
+                  aria-label="Spaces"
                   title="Spaces"
                   class="font-medium tracking-wide text-gray-100 transition-colors duration-200 hover:text-teal-accent-400"
                 >
