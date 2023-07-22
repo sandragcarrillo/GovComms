@@ -70,7 +70,6 @@ const ConnectButton = () => {
             <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-999 flex items-center justify-end">
               <div className="bg-white w-72 h-full p-20 relative">
                 <button className="absolute top-3 right-3 border-none bg-transparent font-semibold text-lg cursor-pointer" onClick={handleSidebarToggle}>X</button>
-                <NotificationsTest />
               </div>
             </div>
           )}
