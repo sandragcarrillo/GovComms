@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ConnectButton from "../../ConnectButton";
 
 export const Nav = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -63,16 +64,7 @@ export const Nav = () => {
                   Spaces
                 </a>
               </li>
-              <li>
-                <a
-                  href="/"
-                  class="inline-flex items-center justify-center h-12 px-6 font-medium tracking-wide text-white transition duration-200 rounded-xl shadow-md bg-blue-500  hover:bg-black hover:border-blue-500 hover:border-2 focus:shadow-outline focus:outline-none"
-                  aria-label="Connect wallet"
-                  title="Connect wallet"
-                >
-                  Connect wallet
-                </a>
-              </li>
+                <ConnectButton />
             </ul>
             <div class="lg:hidden">
               <button
