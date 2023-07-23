@@ -21,6 +21,7 @@ import build from "../src/assets/build.png"
 import rewards from "../src/assets/rewards.png"
 import nft from "../src/assets/nft.png"
 import law from "../src/assets/law.png"
+import SendMessageTest from './pages/chat';
 
 
 interface Web3ReactState {
@@ -172,6 +173,7 @@ export function App() {
                   <Route path="/payloads" element={<PayloadsPage />} />
                   <Route path="/socket" element={<SocketPage />} />
                   <Route path="/embed" element={<EmbedPage />} />
+                  <Route path="/chat" element={< SendMessageTest/>} />
                 </Routes>
                 <div className='w-full p-28 h-auto gap-6 flex items-center justify-center flex-col'>
                 <div className='text-center font-bold  text-6xl flex flex-col gap-2'>
