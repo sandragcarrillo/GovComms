@@ -162,9 +162,8 @@ export function App() {
                     path="/"
                     element={
                       <nav className="flex gap-6 justify-center w-full bg-black text-white font-medium tracking-wide ">
-                        <Link to="/notifications" className='font-medium bg-black tracking-wide text-gray-100 transition-colors duration-200 hover:text-teal-accent-400'>Proposals</Link>
+                        <Link to="/chat" className='font-medium bg-black tracking-wide text-gray-100 transition-colors duration-200 hover:text-teal-accent-400'>Proposals</Link>
                         <Link to="/embed" className='nav-button'>Explore DAOs</Link>
-                        <Link to="/payloads" className='nav-button'>Spaces</Link>
                       </nav>
                     }
                   />

@@ -15,6 +15,17 @@ const SendMessageTest = () => {
   const [receiverAddress, setReceiverAddress] = useState('');
   const [sendResponse, setSendResponse] = useState<any>('');
   const [account, setAccount] = useState(acc);
+  const [proposal, setProposal] = useState({
+    title: "Choose Leader for DAO Treasury",
+    creator: "0xc331..8f6F3",
+    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget lorem non est vestibulum elementum nec vitae felis. Nulla facilisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed convallis id metus in tincidunt. Nulla eu ex vitae orci aliquet facilisis in in nisi. Nulla facilisi. Praesent eu lorem urna.",
+  });
+
+
+  const handleVote = (voteType: 'For' | 'Against') => {
+    // Aquí puedes agregar la lógica para realizar la votación.
+    console.log(`Voted ${voteType} for the proposal: ${proposal.title}`);
+  };
 
   const updateMessageContent = (e: React.SyntheticEvent<HTMLElement>) => {
     setMessageContent((e.target as HTMLInputElement).value);
@@ -77,7 +88,35 @@ const SendMessageTest = () => {
   return (
     <>
     <div className=" flex justify-between text-white">
-    <div className="p-1 shadow-xl max-w-xl ml-64 mt-20 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl">
+
+    <div className="bg-white p-4 rounded-xl mt-4">
+        <h2 className="text-2xl text-black font-semibold">{proposal.title}</h2>
+        <p className="text-gray-600">Created by: {proposal.creator}</p>
+        <p className="mt-4 text-gray-800">{proposal.text}</p>
+        <div className="flex space-x-4 mt-4">
+          <button
+            onClick={() => handleVote('For')}
+            className="px-4 py-2 text-white bg-green-500 rounded-md">For</button>
+          <button
+            onClick={() => handleVote('Against')}
+            className="px-4 py-2 text-white bg-red-500 rounded-md">Against</button>
+        </div>
+        <button 
+          className="relative block group ">
+            <Link to={'https://staging.push.org/chat/chatid:abcb1bbd1e1b0b3bd33d2db8a93ecbb72e323f8896ea4e7da7a52723c4450bbf'}>
+            <span className="absolute inset-0  bg-indigo-500  rounded-lg"></span>
+          <div className="transition bg-black relative border-2 rounded-lg">
+            <div className="p-2 ">
+              <p className="text-xl font-outerSans font-medium">Join Group Chat</p>
+            </div>
+          </div>
+            </Link>
+          
+        </button>
+      </div>
+  
+
+      <div className="p-1 shadow-xl max-w-xl m-auto bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-2xl">
       <div className=" bg-black p-6 rounded-xl">
         <div className="">
         <div className="relative  mt-12  flex flex-col  justify-center items-center  bg-black shadow-xl rounded-xl">
@@ -87,9 +126,9 @@ const SendMessageTest = () => {
 
         <div className="p-4">
           <div className="mb-4">
-            <label className="block mb-2">Message Content</label>
+            <label className="block mb-2 text-white">Message Content</label>
              
-            <div className="max-w-xl">
+          <div className="w-1/2">
           <label
             className="flex justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
             <span className="flex items-center space-x-2">
@@ -162,11 +201,7 @@ const SendMessageTest = () => {
             </div>
             </div>
             </div>
-
-
           </div>
-
-
 
           <div className="mb-4">
             <label className="block mb-2">Receiver's Address</label>
@@ -190,7 +225,7 @@ const SendMessageTest = () => {
             <div className="mb-4">
             <button
           onClick={() => testSendMessage(0)}
-          className="relative block group ">
+          className="relative block group  ">
           <span className="absolute inset-0  bg-pink-500  rounded-lg"></span>
           <div className="transition bg-black relative border-2 rounded-lg group-hover:-translate-x-2 group-hover:-translate-y-2">
             <div className="p-2 ">
@@ -199,18 +234,7 @@ const SendMessageTest = () => {
           </div>
         </button>
 
-        <button 
-          className="relative block group ">
-            <Link to={'https://staging.push.org/chat/chatid:abcb1bbd1e1b0b3bd33d2db8a93ecbb72e323f8896ea4e7da7a52723c4450bbf'}>
-            <span className="absolute inset-0  bg-indigo-500  rounded-lg"></span>
-          <div className="transition bg-black relative border-2 rounded-lg group-hover:-translate-x-2 group-hover:-translate-y-2">
-            <div className="p-2 ">
-              <p className="text-xl font-outerSans font-medium">Join Group Chat</p>
-            </div>
-          </div>
-            </Link>
-          
-        </button>
+       
             </div>
 
 

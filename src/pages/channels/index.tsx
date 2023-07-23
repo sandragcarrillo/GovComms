@@ -6,7 +6,7 @@ import * as PushAPI from '@pushprotocol/restapi';
 import { getCAIPAddress } from '../../helpers';
 
 const ChannelsPage = () => {
-  const { library, account, chainId } = useContext<any>(Web3Context);
+  const { library, account } = useContext<any>(Web3Context);
   const { env, isCAIP } = useContext<any>(EnvContext);
   const [channelAddr, setChannelAddr] = useState<string>('');
   const [channelName, setChannelName] = useState<string>('');
@@ -15,18 +15,31 @@ const ChannelsPage = () => {
   const [channelListData, setChannelListData] = useState();
   const [subscriberData, setSubscriberData] = useState();
   const [subscriberStatus, setSubscriberStatus] = useState<boolean>();
-  
+
+  const channels = [
+    {
+      id: 1,
+      name: 'Channel 1',
+      channelAddress: 'eip155:0x90A48D5CF7343B08dA12E067680B4C6dbfE551Be',
+    },
+    {
+      id: 2,
+      name: 'Channel 2',
+      channelAddress: 'eip155:0xc3316B766F05e9d4911416A8bC237aAe0Dd8f6F3',
+    },
+    {
+      id: 3,
+      name: 'Channel 3',
+      channelAddress: 'eip155:0x16EB4622f00BEd1D27dCCb4C0684C0E16512A36f',
+    },
+  ];
 
   const updateChannelAddress = (e: React.SyntheticEvent<HTMLElement>) => {
-    setChannelAddr(
-      (e.target as HTMLInputElement).value
-    );
+    setChannelAddr((e.target as HTMLInputElement).value);
   };
 
   const updateChannelName = (e: React.SyntheticEvent<HTMLElement>) => {
-    setChannelName(
-      (e.target as HTMLInputElement).value
-    );
+    setChannelName((e.target as HTMLInputElement).value);
   };
 
   const testGetChannelByAddress = async () => {
@@ -36,9 +49,9 @@ const ChannelsPage = () => {
       // object for channel data
       const response = await PushAPI.channels.getChannel({
         channel: isCAIP ? getCAIPAddress(env, channelAddr) : channelAddr,
-        env
+        env,
       });
-      
+
       setChannelData(response);
     } catch (e) {
       console.error(e);
@@ -54,7 +67,7 @@ const ChannelsPage = () => {
       // Array for channels data
       const response = await PushAPI.channels.search({
         query: channelName,
-        env
+        env,
       });
       setChannelListData(response);
     } catch (e) {
@@ -69,12 +82,12 @@ const ChannelsPage = () => {
       setLoading(true);
       const response = await PushAPI.channels._getSubscribers({
         channel: isCAIP ? getCAIPAddress(env, channelAddr) : channelAddr,
-        env
+        env,
       });
-  
+
       setSubscriberData(response);
-    } catch(e) {
-      console.error(e)
+    } catch (e) {
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -85,47 +98,31 @@ const ChannelsPage = () => {
       setLoading(true);
       let subscriptions = await PushAPI.user.getSubscriptions({
         user: isCAIP ? getCAIPAddress(env, account) : account,
-        env
+        env,
       });
 
       subscriptions = subscriptions.map((sub: any) => sub.channel.toLowerCase());
-      
+
       const status = subscriptions.includes(channelAddr.toLowerCase());
 
       setSubscriberStatus(status);
-    } catch(e) {
-      console.error(e)
+    } catch (e) {
+      console.error(e);
     } finally {
       setLoading(false);
     }
-
-
   };
 
-  const testOptFunctionality = async () => {
+  const testOptFunctionality = async (channelAddress: string, optIn: boolean) => {
     const _signer = library.getSigner(account);
 
     try {
       setLoading(true);
 
-      if (subscriberStatus) {
-        await PushAPI.channels.unsubscribe({
-          signer: _signer,
-          channelAddress: isCAIP ? getCAIPAddress(env, channelAddr) : channelAddr,
-          userAddress: isCAIP ? getCAIPAddress(env, account) : account,
-          env,
-          onSuccess: () => {
-            console.log('opt out success');
-            setSubscriberStatus(false);
-          },
-          onError: (e) => {
-            console.error('opt out error', e);
-          },
-        })
-      } else {
+      if (optIn) {
         await PushAPI.channels.subscribe({
           signer: _signer,
-          channelAddress: isCAIP ? getCAIPAddress(env, channelAddr) : channelAddr,
+          channelAddress: isCAIP ? getCAIPAddress(env, channelAddress) : channelAddress,
           userAddress: isCAIP ? getCAIPAddress(env, account) : account,
           env,
           onSuccess: () => {
@@ -135,11 +132,24 @@ const ChannelsPage = () => {
           onError: (e) => {
             console.error('opt in error', e);
           },
-        })
+        });
+      } else {
+        await PushAPI.channels.unsubscribe({
+          signer: _signer,
+          channelAddress: isCAIP ? getCAIPAddress(env, channelAddress) : channelAddress,
+          userAddress: isCAIP ? getCAIPAddress(env, account) : account,
+          env,
+          onSuccess: () => {
+            console.log('opt out success');
+            setSubscriberStatus(false);
+          },
+          onError: (e) => {
+            console.error('opt out error', e);
+          },
+        });
       }
-
-    } catch(e) {
-      console.error(e)
+    } catch (e) {
+      console.error(e);
     } finally {
       setLoading(false);
     }
@@ -147,9 +157,9 @@ const ChannelsPage = () => {
 
   useEffect(() => {
     if (channelData && channelData['channel']) {
-      setChannelAddr(channelData['channel'])
+      setChannelAddr(channelData['channel']);
     }
-  }, [channelData])
+  }, [channelData]);
 
   useEffect(() => {
     // update the other data sections as well on opt in/out completion
@@ -158,8 +168,6 @@ const ChannelsPage = () => {
       testGetSubscribers();
     }
   }, [subscriberStatus]);
-
-  // console.log('LOG: --> ', { env, isCAIP });
 
   return (
     <div>
@@ -173,56 +181,54 @@ const ChannelsPage = () => {
           <input type="text" onChange={updateChannelAddress} value={channelAddr} style={{ width: 400, height: 30 }} />
           <SectionButton onClick={testGetChannelByAddress}>get channel data</SectionButton>
         </SectionItem>
- 
+
         <SectionItem>
           <div>
-            {channelData ? (
-              <CodeFormatter>
-                {JSON.stringify(channelData, null, 4)}
-              </CodeFormatter>
-            ) : null}
+            {channelData ? <CodeFormatter>{JSON.stringify(channelData, null, 4)}</CodeFormatter> : null}
 
             <SectionItem style={{ marginTop: 20 }}>
               <SectionButton onClick={testGetSubscribers}>get subscribers</SectionButton>
             </SectionItem>
-            
-            {subscriberData ? (
-              <CodeFormatter>
-                {JSON.stringify(subscriberData, null, 4)}
-              </CodeFormatter>
-            ) : null}
+
+            {subscriberData ? <CodeFormatter>{JSON.stringify(subscriberData, null, 4)}</CodeFormatter> : null}
 
             <SectionItem style={{ marginTop: 20 }}>
               <SectionButton onClick={testSubscriberStatus}>check if logged-in user is subscribed</SectionButton>
             </SectionItem>
             {typeof subscriberStatus === 'boolean' ? (
               <>
-                <CodeFormatter>
-                  {JSON.stringify(subscriberStatus, null, 4)}
-                </CodeFormatter>
+                <CodeFormatter>{JSON.stringify(subscriberStatus, null, 4)}</CodeFormatter>
 
-                <SectionButton onClick={testOptFunctionality}>{subscriberStatus ? 'OPT OUT' : 'OPT IN'}</SectionButton>
+                {/* Renderiza la lista de canales */}
+                {channels.map((channel) => (
+                  <div key={channel.id}>
+                    <h3>{channel.name}</h3>
+                    <p>Channel Address: {channel.channelAddress}</p>
+                    {/* Agrega un botón para el opt-in y otro para el opt-out */}
+                    {subscriberStatus ? (
+                      <button onClick={() => testOptFunctionality(channel.channelAddress, false)}>OPT OUT</button>
+                    ) : (
+                      <button onClick={() => testOptFunctionality(channel.channelAddress, true)}>OPT IN</button>
+                    )}
+                  </div>
+                ))}
               </>
             ) : null}
           </div>
         </SectionItem>
 
         <div style={{ marginTop: 50, paddingTop: 30, borderTop: '1px solid' }}>
-            <SectionItem>
-              <label>Channel Name</label>
-              <input type="text" onChange={updateChannelName} value={channelName} style={{ width: 400, height: 30 }} />
-              <SectionButton onClick={testGetChannelByName}>get channel data</SectionButton>
-            </SectionItem>
+          <SectionItem>
+            <label>Channel Name</label>
+            <input type="text" onChange={updateChannelName} value={channelName} style={{ width: 400, height: 30 }} />
+            <SectionButton onClick={testGetChannelByName}>get channel data</SectionButton>
+          </SectionItem>
 
-            {channelListData ? (
-              <CodeFormatter>
-                {JSON.stringify(channelListData, null, 4)}
-              </CodeFormatter>
-            ) : null}
+          {channelListData ? <CodeFormatter>{JSON.stringify(channelListData, null, 4)}</CodeFormatter> : null}
         </div>
       </Section>
     </div>
   );
-}
+};
 
 export default ChannelsPage;
